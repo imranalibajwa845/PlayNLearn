@@ -1,0 +1,95 @@
+{% load staticfiles %}
+{% load static %}
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="{% static 'css/home.css'%}">
+    <script src="{% static 'js/blockly_compressed.js' %}"></script>
+    <script src="{% static 'js/javascript_compressed.js' %}"></script>
+    <script src="{% static 'js/blocks_code.js' %}"></script>
+    <script src="{% static 'js/apni.js' %}"></script>
+    <script src="{% static 'js/jquery-3.3.1.min.js' %}"></script>
+    <script type="text/javascript" src="{%  static 'js/excanvas.js' %}"></script>
+    <script type="text/javascript" src="{% static 'js/game1.js' %}"></script>
+</head>
+<body>
+<a href="{% url 'landingPage' %}" id="anch">Play N' Learn :</a>
+
+{% block content %}
+    <span>Welcome, {{ user.get_full_name }} !</span>
+{% endblock %}
+<a href="{% url 'logout' %}">logout</a><div class="Profile"> </div>
+<div id="center">
+    <div class="dragDrop"></div>
+</div>
+<div id="game"></div>
+<input type="button" name="runPrograme" class="runPrograme" onclick="move()">
+
+<xml xmlns="http://www.w3.org/1999/xhtml" id="toolbox" style="display: none;">
+  <block type="move_forward"></block>
+  <block type="moveleft">
+    <field name="NAME">left</field>
+  </block>
+  <block type="moveright">
+    <field name="right">right</field>
+  </block>
+  <block type="repeat_until"></block>
+  <block type="if">
+    <field name="path_toward">path toward</field>
+  </block>
+  <block type="if_else">
+    <field name="if_else">ahead</field>
+  </block>
+</xml>
+
+<script >/* TODO: Change toolbox XML ID if necessary. Can export toolbox XML from Workspace Factory. */
+var toolbox = document.getElementById("toolbox");
+
+var options = {
+	toolbox : toolbox,
+	collapse : false,
+	comments : false,
+	disable : false,
+	maxBlocks : Infinity,
+	trashcan : true,
+	horizontalLayout : false,
+	toolboxPosition : 'start',
+	css : true,
+	media : 'https://blockly-demo.appspot.com/static/media/',
+	rtl : false,
+	scrollbars : false,
+	sounds : true,
+	oneBasedIndex : true
+};
+
+/* Inject your workspace */
+var workspace = Blockly.inject('center', options);
+
+/* Load Workspace Blocks from XML to workspace. Remove all code below if no blocks to load */
+
+/* TODO: Change workspace blocks XML ID if necessary. Can export workspace blocks XML from Workspace Factory. */
+var workspaceBlocks = document.getElementById("workspaceBlocks");
+
+/* Load blocks to workspace. */
+Blockly.Xml.domToWorkspace(workspaceBlocks, workspace);
+
+function runcode()
+  {
+    window.loopTrap =1000;
+    Blockly.JavaScript.INFINITE_LOOP_TRAP='if(--window.loopTrap==0) throw "Infinite loop."\n';
+    var code=Blockly.JavaScript.workspaceToCode(workspace);
+    Blockly.JavaScript.INFINITE_LOOP_TRAP=null;
+    try{
+      eval(code);
+    }catch(e)
+    {
+      alert(e);
+    }
+  }
+
+</script>
+<script type="text/javascript">
+    	 prepareCanvas(document.getElementById("game"), 440, 220);
+</script>
+</body>
+</html>
